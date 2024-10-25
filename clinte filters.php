@@ -1,72 +1,30 @@
 <?php
+// add_two_numbers.php
 
-namespace Config;
+// Set response header to JSON
+header('Content-Type: application/json');
 
-use CodeIgniter\Config\BaseConfig;
-use CodeIgniter\Filters\CSRF;
-use CodeIgniter\Filters\DebugToolbar;
-use CodeIgniter\Filters\Honeypot;
-
-use App\Filters\ApiAuth;
-
-class Filters extends BaseConfig
-{
-    /**
-     * Configures aliases for Filter classes to
-     * make reading things nicer and simpler.
-     *
-     * @var array
-     */
-    public $aliases = [
-        'csrf'     => CSRF::class,
-        'toolbar'  => DebugToolbar::class,
-        'honeypot' => Honeypot::class,
-        'AuthCheck'=> \App\Filters\AuthCheckFilter::class,
-        'apiauth' => ApiAuth::class,
-    ];
-
-    /**
-     * List of filter aliases that are always
-     * applied before and after every request.
-     *
-     * @var array
-     */
-    public $globals = [
-        'before' => [
-            // 'honeypot',
-            // 'csrf',
-            //'AuthCheck'=>['except' =>['auth/*']]
-            'AuthCheck' => ['except' => ['auth/*', 'auth', '/']], 
-            'apiauth',
-        ],
-        'after' => [
-            //'toolbar',
-            // 'honeypot',
-           
-        ],
-    ];
-
-    /**
-     * List of filter aliases that works on a
-     * particular HTTP method (GET, POST, etc.).
-     *
-     * Example:
-     * 'post' => ['csrf', 'throttle']
-     *
-     * @var array
-     */
-    public $methods = [];
-
-    /**
-     * List of filter aliases that should run on any
-     * before or after URI patterns.
-     *
-     * Example:
-     * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
-     *
-     * @var array
-     */
-    public $filters = [
-        'apiauth' => ['before' => ['api/*']],
-    ];
+// Check if both numbers are provided in GET request
+if (isset($_GET['num1']) && isset($_GET['num2'])) {
+    // Sanitize input to ensure numbers
+    $num1 = floatval($_GET['num1']);
+    $num2 = floatval($_GET['num2']);
+    
+    // Calculate the sum
+    $sum = $num1 + $num2;
+    
+    // Return the result as JSON
+    echo json_encode([
+        'status' => 'success',
+        'num1' => $num1,
+        'num2' => $num2,
+        'sum' => $sum
+    ]);
+} else {
+    // Error response if input is missing
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Please provide both num1 and num2 parameters in the query string.'
+    ]);
 }
+?>
